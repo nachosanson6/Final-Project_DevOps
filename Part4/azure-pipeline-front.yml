@@ -1,0 +1,35 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+    - main
+
+pool:
+    vmImage: ubuntu-latest
+
+steps:
+    - task: ArchiveFiles@2
+      inputs:
+          rootFolderOrFile: '.'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'ironclouderssssss'
+          publishLocation: 'Container'
+
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'Ironclouders'
+          appType: 'webAppLinux'
+          WebAppName: 'app-service1-ironclouder'
+          packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          RuntimeStack: 'STATICSITE|1.0'
+

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: clusterip-service-back
+    namespace: ironclouder
+spec:
+    type: ClusterIP
+    ports:
+        - port: 80
+          targetPort: 5432
+    selector:
+        app: backend

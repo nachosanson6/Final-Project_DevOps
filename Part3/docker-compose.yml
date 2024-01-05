@@ -1,0 +1,43 @@
+version: "3.3"
+
+services:
+  client:
+    build: ../Part2/Basic3Tier.UI
+    container_name: frontend
+    ports:
+      - "8080:80"
+    networks:
+      - netApp-network
+
+  server:
+    build: ../Part2/Basic3Tier.API
+    container_name: backend
+    environment:
+      - "ConnectionStrings__Basic3Tier=Host=postgres;Port=5432;Database=basic3tier;Username=postgres;Password=admin123"
+    ports:
+      - "7000:80"
+    networks:
+      - netApp-network
+
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=admin123"
+      - "POSTGRES_DB=basic3tier"
+
+    volumes:
+      - part3_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - netApp-network
+
+volumes:
+  part3_db_data:
+
+networks:
+  netApp-network:
+    driver: bridge
